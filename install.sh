@@ -36,6 +36,7 @@ fi
 
 touch $DIST_DIR/poli
 chmod +x $DIST_DIR/poli
-printf "#!/bin/bash\n\n./bin/poli" > $DIST_DIR/poli
+DIR='DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"'
+printf "#!/bin/bash\n\n$DIR\n\$DIR/bin/poli" > $DIST_DIR/poli
 
 popd 

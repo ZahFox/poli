@@ -6,9 +6,23 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(LIBS "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(SRC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(LOGGING "${SRC}/modules/logging")
+set(NOTES "${SRC}/modules/notes")
 set(DIST "${CMAKE_CURRENT_SOURCE_DIR}/dist")
 
 project (poli VERSION ${PROJECT_VERSION} LANGUAGES CXX)
+
+add_library(notes)
+target_include_directories(notes
+PUBLIC
+	$<BUILD_INTERFACE:${NOTES}>
+)
+target_sources(notes
+PRIVATE
+	${NOTES}/notes.h
+	${NOTES}/notes.cpp
+	${NOTES}/templates
+	${NOTES}/templates.h
+)
 
 add_library(logging SHARED)
 
@@ -57,9 +71,9 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 endif()
 
 add_executable (poli src/main.cpp)
-target_link_libraries(poli logging)
+target_link_libraries(poli logging notes)
 
-set_target_properties(poli logging
+set_target_properties(poli logging notes
 PROPERTIES
 	ARCHIVE_OUTPUT_DIRECTORY ${DIST}/lib
 	LIBRARY_OUTPUT_DIRECTORY ${DIST}/lib
