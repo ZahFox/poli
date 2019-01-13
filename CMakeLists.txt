@@ -4,8 +4,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_VERSION "0.1.0")
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(LIBS "${CMAKE_CURRENT_SOURCE_DIR}/lib")
-set(INC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(SRC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+set(LOGGING "${SRC}/modules/logging")
 set(DIST "${CMAKE_CURRENT_SOURCE_DIR}/dist")
 
 project (poli VERSION ${PROJECT_VERSION} LANGUAGES CXX)
@@ -14,8 +14,7 @@ add_library(logging SHARED)
 
 target_include_directories(logging
 PUBLIC
-	$<INSTALL_INTERFACE:include>
-	$<BUILD_INTERFACE:${INC}>
+	$<BUILD_INTERFACE:${LOGGING}>
 	$<BUILD_INTERFACE:${LIBS}/spdlog/include>
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 PRIVATE
@@ -31,7 +30,11 @@ PROPERTIES
 	VISIBILITY_INLINES_HIDDEN 1
 )
 
-target_sources(logging PRIVATE ${SRC}/log.cpp)
+target_sources(logging 
+PRIVATE
+    ${LOGGING}/log.h
+    ${LOGGING}/log.cpp
+)
 
 include(GenerateExportHeader)
 generate_export_header(logging)
@@ -63,3 +66,6 @@ PROPERTIES
 	RUNTIME_OUTPUT_DIRECTORY ${DIST}/bin
 )
 
+if (WIN32)
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT poli)
+endif()
