@@ -1,6 +1,5 @@
 #pragma once
 
-class Notes {
-public:
-  static void Init();
-};
+namespace Notes {
+void Init();
+}
